@@ -239,13 +239,14 @@ function SectionShell({ children, s, config }) {
   const isDark = s.on === "dark";
   return (
     <div
-      className="min-h-screen w-full flex flex-col"
+      className="min-h-[100dvh] w-full flex flex-col"
       style={
         bgUrl
           ? {
               backgroundImage: `radial-gradient(ellipse at top, rgba(139, 92, 246, 0.15), transparent 70%), radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.15), transparent 70%), linear-gradient(${config.theme.overlay},${config.theme.overlay}), url(${bgUrl})`,
               backgroundSize: "cover, cover, cover, cover",
               backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
               color: isDark ? "#fff" : "#0a0a0a",
             }
           : { 
@@ -404,7 +405,7 @@ function HeroSlide({ s, onNavigate }) {
 
 function GridSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
@@ -438,7 +439,7 @@ function GridSlide({ s }) {
 
 function CardsSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
@@ -473,7 +474,7 @@ function CardsSlide({ s }) {
 
 function StatsSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
@@ -503,7 +504,7 @@ function StatsSlide({ s }) {
 function TimelineSlide({ s }) {
   const max = Math.max(...s.milestones.map((m) => m.value));
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
@@ -533,7 +534,7 @@ function TimelineSlide({ s }) {
 
 function CalloutsSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
@@ -562,7 +563,7 @@ function CalloutsSlide({ s }) {
 
 function MediaSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-4 sm:px-6 md:px-16">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-4 sm:px-6 md:px-16">
       <div className="relative max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div className={`relative rounded-xl md:rounded-2xl overflow-hidden border shadow-lg ${
           s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
@@ -588,7 +589,7 @@ function MediaSlide({ s }) {
 
 function LogosSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16 text-center">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16 text-center">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <Pill tone={s.on}>{s.kicker}</Pill>
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
@@ -614,7 +615,7 @@ function LogosSlide({ s }) {
 
 function PricingSlide({ s }) {
   return (
-    <div className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16 text-center">
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16 text-center">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <Pill tone={s.on}>{s.kicker}</Pill>
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
@@ -752,7 +753,7 @@ function ContactSlide({ s }) {
   };
 
   return (
-    <div id="contact" className="flex flex-col justify-center items-center min-h-screen px-6 md:px-16">
+    <div id="contact" className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-6xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div className="text-center space-y-5">
           <Pill tone={s.on}>{s.kicker}</Pill>
