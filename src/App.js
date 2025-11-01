@@ -243,12 +243,17 @@ function SectionShell({ children, s, config }) {
       style={
         bgUrl
           ? {
-              backgroundImage: `linear-gradient(${config.theme.overlay},${config.theme.overlay}), url(${bgUrl})`,
-              backgroundSize: "cover",
+              backgroundImage: `radial-gradient(ellipse at top, rgba(139, 92, 246, 0.15), transparent 70%), radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.15), transparent 70%), linear-gradient(${config.theme.overlay},${config.theme.overlay}), url(${bgUrl})`,
+              backgroundSize: "cover, cover, cover, cover",
               backgroundPosition: "center",
               color: isDark ? "#fff" : "#0a0a0a",
             }
-          : { background: isDark ? "#0b0b14" : "#ffffff", color: isDark ? "#fff" : "#0a0a0a" }
+          : { 
+              background: isDark 
+                ? "radial-gradient(ellipse at top, rgba(139, 92, 246, 0.15), transparent 70%), radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.15), transparent 70%), #0b0b14"
+                : "radial-gradient(ellipse at top, rgba(139, 92, 246, 0.08), transparent 70%), radial-gradient(ellipse at bottom, rgba(59, 130, 246, 0.08), transparent 70%), #ffffff",
+              color: isDark ? "#fff" : "#0a0a0a" 
+            }
       }
     >
       {children}
@@ -260,7 +265,7 @@ function Progress({ index, total, onJump, tone }) {
   return (
     <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 ${
       tone === "dark" ? "bg-white/80" : "bg-black/80"
-    } backdrop-blur rounded-full px-3 py-2 border border-black/10 shadow-sm`}>
+    } backdrop-blur rounded-full px-3 py-2 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}>
       {Array.from({ length: total }).map((_, i) => (
         <button
           key={i}
@@ -282,14 +287,14 @@ function NavButtons({ onPrev, onNext, tone }) {
       <div className="flex items-center justify-between h-full">
         <button
           onClick={onPrev}
-          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 shadow border border-black/10`}
+          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
           aria-label="Previous slide"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <button
           onClick={onNext}
-          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 shadow border border-black/10`}
+          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
           aria-label="Next slide"
         >
           <ArrowRight className="w-5 h-5" />
@@ -355,7 +360,7 @@ function HeroSlide({ s, onNavigate }) {
           onClick={handleCTAClick}
           className={`inline-flex items-center gap-3 rounded-full px-8 py-4 text-lg font-semibold mt-8 ${
             s.on === "dark" ? "bg-white text-black" : "bg-black text-white"
-          } hover:scale-105 transition-transform`}
+          } hover:scale-105 transition-transform shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
         >
           {s.cta.label} <ArrowRight className="w-5 h-5" />
         </a>
@@ -406,14 +411,22 @@ function GridSlide({ s }) {
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
           {s.text && <p className="mt-5 text-lg md:text-xl opacity-90 max-w-4xl">{s.text}</p>}
         </div>
-        <div className="mt-16 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-6 lg:grid-cols-3 gap-4 md:gap-3 lg:gap-8">
           {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-2xl border p-8 shadow-sm ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            }`}>
-              <Icon name={b.icon} className="w-8 h-8" />
-              <h3 className="font-semibold mt-5 text-lg">{b.title}</h3>
-              <p className="text-base opacity-90 mt-3">{b.text}</p>
+            <div 
+              key={i} 
+              className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] transition-transform ${
+                s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+              } p-4 md:p-4 lg:p-8`} 
+              style={{
+                boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+              }}
+            >
+              <div className="relative z-10">
+                <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight">{b.title}</h3>
+                <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -434,17 +447,21 @@ function CardsSlide({ s }) {
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-9">
           {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-2xl border p-9 shadow-sm ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            }`}>
-              <div className="flex items-center gap-3">
-                <Icon name={b.icon} className="w-8 h-8" />
-                <span className={`text-sm rounded-full px-3 py-1 ${
-                  s.on === "dark" ? "bg-white/15" : "bg-black/5"
-                }`}>{b.badge || "Feature"}</span>
+            <div key={i} className={`rounded-[28px] border p-9 relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+            }`} style={{
+              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+            }}>
+              <div className="relative z-10">
+                <div className="flex items-center gap-3">
+                  <Icon name={b.icon} className="w-8 h-8" />
+                  <span className={`text-sm rounded-full px-3 py-1 ${
+                    s.on === "dark" ? "bg-white/15" : "bg-black/5"
+                  }`}>{b.badge || "Feature"}</span>
+                </div>
+                <h3 className="font-semibold mt-5 text-lg">{b.title}</h3>
+                <p className="text-base opacity-90 mt-3">{b.text}</p>
               </div>
-              <h3 className="font-semibold mt-5 text-lg">{b.title}</h3>
-              <p className="text-base opacity-90 mt-3">{b.text}</p>
             </div>
           ))}
         </div>
@@ -465,11 +482,15 @@ function StatsSlide({ s }) {
         </div>
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-9">
           {s.stats?.map((st, i) => (
-            <div key={i} className={`rounded-2xl text-center p-9 shadow-sm ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            } border`}>
-              <div className="text-5xl md:text-6xl font-extrabold">{st.value}</div>
-              <div className="opacity-80 mt-2 text-lg">{st.label}</div>
+            <div key={i} className={`rounded-[28px] text-center p-9 border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+            }`} style={{
+              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+            }}>
+              <div className="relative z-10">
+                <div className="text-5xl md:text-6xl font-extrabold">{st.value}</div>
+                <div className="opacity-80 mt-2 text-lg">{st.label}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -518,14 +539,18 @@ function CalloutsSlide({ s }) {
           <Pill tone={s.on}>{s.kicker}</Pill>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
         </div>
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-4 gap-9">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-3 lg:gap-9">
           {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-2xl p-9 shadow-sm border ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            }`}>
-              <Icon name={b.icon} className="w-8 h-8" />
-              <h3 className="font-semibold mt-5 text-lg">{b.title}</h3>
-              <p className="text-base opacity-90 mt-3">{b.text}</p>
+            <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+            } p-4 md:p-4 lg:p-9`} style={{
+              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+            }}>
+              <div className="relative z-10">
+                <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight">{b.title}</h3>
+                <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
+              </div>
             </div>
           ))}
         </div>
@@ -570,10 +595,14 @@ function LogosSlide({ s }) {
         {s.text && <p className="mt-5 text-lg md:text-xl opacity-80 max-w-4xl mx-auto">{s.text}</p>}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-6 gap-9">
           {s.logos?.map((l, i) => (
-            <div key={i} className={`rounded-xl p-9 shadow-sm text-base ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            } border`}>
-              {l}
+            <div key={i} className={`rounded-[28px] p-9 text-base border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+            }`} style={{
+              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+            }}>
+              <div className="relative z-10">
+                {l}
+              </div>
             </div>
           ))}
         </div>
@@ -590,24 +619,28 @@ function PricingSlide({ s }) {
         <Pill tone={s.on}>{s.kicker}</Pill>
         <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
         {s.text && <p className="mt-5 text-lg md:text-xl opacity-80 max-w-4xl mx-auto">{s.text}</p>}
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-9">
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-3 lg:gap-9">
           {s.tiers?.map((t, i) => (
-            <div key={i} className={`rounded-2xl p-9 shadow-sm text-left border ${
-              s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-            }`}>
-              <div className="flex items-center justify-between">
-                <h3 className="font-semibold text-lg">{t.name}</h3>
-                <span className={`text-sm rounded-full px-3 py-1 ${
-                  s.on === "dark" ? "bg-white/15" : "bg-black/5"
-                }`}>{t.price}</span>
+            <div key={i} className={`rounded-[28px] text-left border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+            } p-4 md:p-5 lg:p-9`} style={{
+              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+            }}>
+              <div className="relative z-10">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-sm md:text-xs lg:text-lg">{t.name}</h3>
+                  <span className={`text-xs md:text-[10px] lg:text-sm rounded-full px-2 md:px-2 lg:px-3 py-1 ${
+                    s.on === "dark" ? "bg-white/15" : "bg-black/5"
+                  }`}>{t.price}</span>
+                </div>
+                <ul className="mt-4 md:mt-3 lg:mt-6 space-y-2 md:space-y-1.5 lg:space-y-3">
+                  {t.features.map((f, j) => (
+                    <li key={j} className="flex items-center gap-2 md:gap-1.5 lg:gap-3 text-xs md:text-[10px] lg:text-base">
+                      <CheckCircle2 className="w-4 h-4 md:w-3 md:h-3 lg:w-5 lg:h-5 flex-shrink-0" /> <span className="leading-tight md:leading-tight">{f}</span>
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <ul className="mt-6 space-y-3">
-                {t.features.map((f, j) => (
-                  <li key={j} className="flex items-center gap-3 text-base">
-                    <CheckCircle2 className="w-5 h-5" /> {f}
-                  </li>
-                ))}
-              </ul>
             </div>
           ))}
         </div>
@@ -728,10 +761,13 @@ function ContactSlide({ s }) {
           </h2>
           {s.text && <p className="text-base md:text-lg opacity-90 mx-auto max-w-2xl -mt-[5px]">{s.text}</p>}
         </div>
-        <div className={`rounded-2xl overflow-hidden border shadow-lg p-9 mt-10 ${
-          s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-        }`}>
-          <h3 className="font-semibold text-xl">Check it out!</h3>
+        <div className={`rounded-[28px] overflow-hidden border p-9 mt-10 relative backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+          s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+        }`} style={{
+          boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+        }}>
+          <div className="relative z-10">
+            <h3 className="font-semibold text-xl">Check it out!</h3>
           <form className="mt-6 grid gap-5" onSubmit={(e) => { e.preventDefault(); submit(); }}>
             <input 
               className="border rounded-xl px-5 py-4 text-lg text-black" 
@@ -808,8 +844,9 @@ function ContactSlide({ s }) {
             >
               <PhoneCall className="w-5 h-5" />
               {isSubmitting ? 'Submitting...' : 'Submit'}
-            </button>
-          </form>
+              </button>
+            </form>
+          </div>
         </div>
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
       </div>
