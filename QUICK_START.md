@@ -63,7 +63,7 @@ After deployment:
 
 ```
 Name: N8N_WEBHOOK_URL
-Value: https://launchos.app.n8n.cloud/webhook/local-host-website-to-trigger-call
+Value: https://your-n8n-instance.com/webhook/your-webhook-id
 
 Name: NODE_ENV
 Value: production

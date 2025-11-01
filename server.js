@@ -384,7 +384,7 @@ app.listen(PORT, () => {
     console.log(`   (Trimmed: ${process.env.N8N_WEBHOOK_URL.trim()})`);
   } else {
     console.log('⚠️  N8N_WEBHOOK_URL not configured. Set it in your .env file.');
-    console.log('   Example: N8N_WEBHOOK_URL=https://launchos.app.n8n.cloud/webhook/local-host-website-to-trigger-call');
+    console.log('   Example: N8N_WEBHOOK_URL=https://your-n8n-instance.com/webhook/your-webhook-id');
   }
   console.log('\n🔒 Security Features:');
   console.log(`  ✅ Rate limiting: ${RATE_LIMIT_MAX_REQUESTS} requests per ${RATE_LIMIT_WINDOW / 1000 / 60} minutes per IP`);
