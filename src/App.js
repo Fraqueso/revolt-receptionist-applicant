@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import axios from "axios";
 import { API_BASE_URL } from "./config";
@@ -689,23 +690,38 @@ function ContactSlide({ s }) {
       });
 
       if (response.data.success) {
-        // Always show modal on successful form submission
-        setShowModal(true);
-        
-        // Log webhook errors but don't block the success popup
-        if (response.data.webhookError) {
-          const errorMsg = response.data.webhookError.message || 'Webhook failed';
-          const status = response.data.webhookError.status;
-          console.error('Webhook error:', response.data.webhookError);
-          // Only show error in console, user still gets success popup
-        }
-        
         // Reset form after submission
         setPhone("");
         setName("");
         setEmail("");
         setBusiness("");
         setExamples(["", "", ""]);
+        
+        // Log webhook errors and show warning in dev mode
+        if (response.data.webhookError) {
+          console.error('❌ Webhook error:', response.data.webhookError);
+          
+          // In dev mode, show error message to user
+          const isDev = process.env.NODE_ENV === 'development' || !process.env.NODE_ENV;
+          if (isDev) {
+            const errorDetails = response.data.webhookError.details || response.data.webhookError.error || 'Webhook failed';
+            setSubmitError(`⚠️  Form submitted, but n8n webhook failed: ${errorDetails}`);
+            
+            // Auto-clear the error after 10 seconds
+            setTimeout(() => setSubmitError(''), 10000);
+          }
+        }
+        
+        // Always show modal on successful form submission
+        // Use setTimeout to ensure state updates happen after form reset
+        // Wrap in try-catch to prevent any errors from crashing the app
+        setTimeout(() => {
+          try {
+            setShowModal(true);
+          } catch (err) {
+            console.error('Error showing modal:', err);
+          }
+        }, 0);
       }
     } catch (error) {
       console.error('Error submitting form:', error);
@@ -840,14 +856,28 @@ function ContactSlide({ s }) {
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
       </div>
 
-      {showModal && (
-        <div className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4">
+      {showModal && typeof document !== 'undefined' && createPortal(
+        <div 
+          className="fixed inset-0 z-50 bg-black/50 backdrop-blur-sm grid place-items-center p-4"
+          onClick={(e) => {
+            // Close modal when clicking outside
+            if (e.target === e.currentTarget) {
+              setShowModal(false);
+            }
+          }}
+        >
           <div className="bg-white text-black rounded-2xl shadow-2xl max-w-xl w-full p-9">
             <h4 className="text-2xl font-semibold">Check your phone</h4>
             <p className="mt-4 text-lg">Please check the phone associated with that phone number. It will be having a phone call.</p>
-            <button onClick={() => setShowModal(false)} className="mt-6 rounded-xl bg-black text-white px-8 py-4 text-lg font-semibold">Close</button>
+            <button 
+              onClick={() => setShowModal(false)} 
+              className="mt-6 rounded-xl bg-black text-white px-8 py-4 text-lg font-semibold hover:opacity-90 transition-opacity"
+            >
+              Close
+            </button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
