@@ -141,73 +141,56 @@ export default async function handler(req, res) {
       ip: ip,
     };
 
-    // Forward to n8n webhook if configured
+    // Forward to n8n webhook asynchronously (fire-and-forget)
+    // This allows immediate response to the user while webhook processes in background
     const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
-    let webhookError = null;
     
     if (n8nWebhookUrl) {
-      try {
-        const cleanWebhookUrl = n8nWebhookUrl.trim();
-        const response = await axios.post(cleanWebhookUrl, payload, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          timeout: 30000,
-          validateStatus: function (status) {
-            return status >= 200 && status < 500;
-          },
-          maxRedirects: 5,
-          followRedirects: true,
-        });
-        
+      // Call webhook asynchronously without blocking the response
+      const cleanWebhookUrl = n8nWebhookUrl.trim();
+      console.log('Forwarding to n8n webhook (async):', cleanWebhookUrl);
+      
+      // Fire and forget - don't await this
+      axios.post(cleanWebhookUrl, payload, {
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        timeout: 30000, // 30 second timeout (but won't block response)
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't throw on 4xx errors
+        },
+        maxRedirects: 5,
+        followRedirects: true,
+      })
+      .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           console.log('✅ Successfully forwarded to n8n webhook');
+          console.log('Response status:', response.status);
         } else {
-          throw {
-            response: response,
-            message: `Request failed with status code ${response.status}`,
-            isAxiosError: true
-          };
+          console.error(`⚠️  Webhook returned non-2xx status: ${response.status}`);
         }
-      } catch (error) {
-        webhookError = error;
-        console.error('❌ Error forwarding to n8n webhook:', error.message);
+      })
+      .catch((error) => {
+        console.error('❌ Error forwarding to n8n webhook (async):');
+        console.error('Webhook URL:', cleanWebhookUrl);
+        console.error('Error message:', error.message);
+        console.error('Error code:', error.code);
         if (error.response) {
           console.error('Response status:', error.response.status);
+          if (error.response.status === 404) {
+            console.error('⚠️  404 Error - Check if n8n workflow is activated');
+          }
         }
-      }
-    } else {
-      webhookError = { message: 'Webhook URL not configured' };
-    }
-
-    // Return response
-    if (webhookError) {
-      let errorDetails = 'Configuration error';
-      if (webhookError.response) {
-        const responseData = webhookError.response.data;
-        if (typeof responseData === 'object' && responseData !== null) {
-          errorDetails = JSON.stringify(responseData);
-        } else if (responseData) {
-          errorDetails = String(responseData);
-        } else {
-          errorDetails = `HTTP ${webhookError.response.status}`;
+        if (error.request) {
+          console.error('Request was made but no response received');
         }
-      }
-      
-      return res.status(200).json({
-        success: true,
-        message: 'Contact form submitted successfully, but webhook failed',
-        data: payload,
-        webhookError: {
-          message: webhookError.message || 'Webhook request failed',
-          details: errorDetails,
-          status: webhookError.response?.status,
-        },
       });
+    } else {
+      console.log('N8N_WEBHOOK_URL not configured. Set it in your .env file or environment variables.');
     }
 
-    // Success
+    // Return success response immediately (don't wait for webhook)
     return res.status(200).json({
       success: true,
       message: 'Contact form submitted successfully',

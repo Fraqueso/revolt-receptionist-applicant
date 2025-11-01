@@ -219,34 +219,33 @@ app.post('/api/contact',
       ip: req.ip || req.connection.remoteAddress || req.headers['x-forwarded-for']?.split(',')[0] || 'unknown',
     };
 
-    // Forward to n8n webhook if configured
+    // Log the submission
+    console.log('Contact form submission:', payload);
+
+    // Forward to n8n webhook asynchronously (fire-and-forget)
+    // This allows immediate response to the user while webhook processes in background
     const n8nWebhookUrl = process.env.N8N_WEBHOOK_URL;
-    let webhookError = null;
     
     if (n8nWebhookUrl) {
-      try {
-        // Clean the webhook URL (remove any trailing whitespace or issues)
-        const cleanWebhookUrl = n8nWebhookUrl.trim();
-        console.log('Forwarding to n8n webhook:', cleanWebhookUrl);
-        console.log('Payload:', JSON.stringify(payload, null, 2));
-        console.log('Request headers:', {
+      // Call webhook asynchronously without blocking the response
+      const cleanWebhookUrl = n8nWebhookUrl.trim();
+      console.log('Forwarding to n8n webhook (async):', cleanWebhookUrl);
+      console.log('Payload:', JSON.stringify(payload, null, 2));
+      
+      // Fire and forget - don't await this
+      axios.post(cleanWebhookUrl, payload, {
+        headers: {
           'Content-Type': 'application/json',
-          'User-Agent': 'node-axios'
-        });
-        
-        const response = await axios.post(cleanWebhookUrl, payload, {
-          headers: {
-            'Content-Type': 'application/json',
-            'Accept': 'application/json',
-          },
-          timeout: 30000, // 30 second timeout
-          validateStatus: function (status) {
-            return status >= 200 && status < 500; // Don't throw on 4xx errors
-          },
-          maxRedirects: 5,
-          followRedirects: true,
-        });
-        
+          'Accept': 'application/json',
+        },
+        timeout: 30000, // 30 second timeout (but won't block response)
+        validateStatus: function (status) {
+          return status >= 200 && status < 500; // Don't throw on 4xx errors
+        },
+        maxRedirects: 5,
+        followRedirects: true,
+      })
+      .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           console.log('✅ Successfully forwarded to n8n webhook');
           console.log('Response status:', response.status);
@@ -254,86 +253,36 @@ app.post('/api/contact',
             console.log('Response data:', JSON.stringify(response.data, null, 2));
           }
         } else {
-          // Treat non-2xx responses as errors
-          throw {
-            response: response,
-            message: `Request failed with status code ${response.status}`,
-            isAxiosError: true
-          };
+          console.error(`⚠️  Webhook returned non-2xx status: ${response.status}`);
         }
-      } catch (error) {
-        webhookError = error;
-        console.error('❌ Error forwarding to n8n webhook:');
-        console.error('Webhook URL:', n8nWebhookUrl);
+      })
+      .catch((error) => {
+        console.error('❌ Error forwarding to n8n webhook (async):');
+        console.error('Webhook URL:', cleanWebhookUrl);
         console.error('Error message:', error.message);
         console.error('Error code:', error.code);
-        console.error('Error stack:', error.stack);
         if (error.response) {
           console.error('Response status:', error.response.status);
           console.error('Response status text:', error.response.statusText);
-          console.error('Response headers:', JSON.stringify(error.response.headers, null, 2));
-          console.error('Response data:', JSON.stringify(error.response.data, null, 2));
-          
-          // Provide helpful message for 404
           if (error.response.status === 404) {
             console.error('⚠️  404 Error - This usually means:');
             console.error('   1. The n8n workflow is not activated (make sure to click "Activate" in n8n)');
             console.error('   2. The webhook URL is incorrect');
             console.error('   3. The webhook path/ID has changed');
-            console.error('   Check your n8n workflow and ensure it is activated with the correct webhook URL.');
           }
         }
         if (error.request) {
           console.error('Request was made but no response received');
-          console.error('Request details:', {
-            url: n8nWebhookUrl,
-            timeout: error.code === 'ECONNABORTED' ? 'Request timeout' : 'Connection error'
-          });
         }
         if (error.code === 'ECONNREFUSED') {
           console.error('Connection refused - check if n8n webhook URL is correct and accessible');
         }
-      }
+      });
     } else {
       console.log('N8N_WEBHOOK_URL not configured. Set it in your .env file or environment variables.');
-      webhookError = { message: 'Webhook URL not configured' };
     }
 
-    // Log the submission
-    console.log('Contact form submission:', payload);
-
-    // Return response with webhook status
-    if (webhookError) {
-      // Format error details properly
-      let errorDetails = 'Configuration error';
-      if (webhookError.response) {
-        // Server responded with error
-        const responseData = webhookError.response.data;
-        if (typeof responseData === 'object' && responseData !== null) {
-          errorDetails = JSON.stringify(responseData);
-        } else if (responseData) {
-          errorDetails = String(responseData);
-        } else {
-          errorDetails = `HTTP ${webhookError.response.status} ${webhookError.response.statusText || ''}`;
-        }
-      } else if (webhookError.request) {
-        errorDetails = 'No response from webhook server';
-      }
-      
-      return res.status(200).json({
-        success: true,
-        message: 'Contact form submitted successfully, but webhook failed',
-        data: payload,
-        webhookError: {
-          message: webhookError.message || 'Webhook request failed',
-          details: errorDetails,
-          status: webhookError.response?.status,
-          webhookUrl: n8nWebhookUrl
-        },
-      });
-    }
-
-    // Return success response
+    // Return success response immediately (don't wait for webhook)
     res.status(200).json({
       success: true,
       message: 'Contact form submitted successfully',

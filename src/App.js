@@ -689,30 +689,18 @@ function ContactSlide({ s }) {
       });
 
       if (response.data.success) {
-        // Show error if webhook failed
+        // Always show modal on successful form submission
+        setShowModal(true);
+        
+        // Log webhook errors but don't block the success popup
         if (response.data.webhookError) {
           const errorMsg = response.data.webhookError.message || 'Webhook failed';
           const status = response.data.webhookError.status;
-          let errorDetails = response.data.webhookError.details || '';
-          
-          // Format error details for 404
-          if (status === 404) {
-            errorDetails = 'Webhook not found (404). Make sure: 1) The n8n workflow is activated, 2) The webhook URL is correct.';
-          } else if (errorDetails && typeof errorDetails === 'string') {
-            try {
-              const parsed = JSON.parse(errorDetails);
-              errorDetails = JSON.stringify(parsed, null, 2);
-            } catch (e) {
-              // Already a string, keep as is
-            }
-          }
-          
-          setSubmitError(`Form submitted, but webhook failed (${status || 'error'}): ${errorDetails || errorMsg}. Check server logs for details.`);
           console.error('Webhook error:', response.data.webhookError);
-        } else {
-          setShowModal(true);
+          // Only show error in console, user still gets success popup
         }
-        // Reset form after submission (success or partial success)
+        
+        // Reset form after submission
         setPhone("");
         setName("");
         setEmail("");
