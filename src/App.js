@@ -723,15 +723,15 @@ function ContactSlide({ s }) {
       <div className="max-w-6xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div className="text-center space-y-5">
           <Pill tone={s.on}>{s.kicker}</Pill>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight bg-gradient-to-r from-stone-50 to-cyan-400 bg-clip-text text-transparent">
+          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight pb-2 bg-gradient-to-r from-stone-50 to-cyan-400 bg-clip-text text-transparent">
             {s.title}
           </h2>
-          {s.text && <p className="text-base md:text-lg opacity-90 mx-auto max-w-2xl">{s.text}</p>}
+          {s.text && <p className="text-base md:text-lg opacity-90 mx-auto max-w-2xl -mt-[5px]">{s.text}</p>}
         </div>
         <div className={`rounded-2xl overflow-hidden border shadow-lg p-9 mt-10 ${
           s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
         }`}>
-          <h3 className="font-semibold text-xl">Start verification</h3>
+          <h3 className="font-semibold text-xl">Check it out!</h3>
           <form className="mt-6 grid gap-5" onSubmit={(e) => { e.preventDefault(); submit(); }}>
             <input 
               className="border rounded-xl px-5 py-4 text-lg text-black" 
@@ -810,20 +810,6 @@ function ContactSlide({ s }) {
               {isSubmitting ? 'Submitting...' : 'Submit'}
             </button>
           </form>
-        </div>
-        <div className="mt-10 grid grid-cols-2 gap-5 max-w-lg">
-          <a href={`mailto:${s.contact?.email}`} className={`rounded-xl p-6 shadow-sm border ${
-            s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-          }`}>
-            <div className="text-sm opacity-70">Email</div>
-            <div className="font-medium text-lg">{s.contact?.email}</div>
-          </a>
-          <a href={`tel:${s.contact?.phone}`} className={`rounded-xl p-6 shadow-sm border ${
-            s.on === "dark" ? "border-white/20 bg-white/10" : "border-black/10 bg-white"
-          }`}>
-            <div className="text-sm opacity-70">Phone</div>
-            <div className="font-medium text-lg">{s.contact?.phone}</div>
-          </a>
         </div>
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
       </div>

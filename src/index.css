@@ -15,3 +15,14 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+h1, h2, h3 {
+  /* Ensure drop shadow is behind text */
+  text-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* For gradient text (transparent text), use filter drop-shadow which works better */
+h1[class*="bg-clip-text"], h2[class*="bg-clip-text"], h3[class*="bg-clip-text"] {
+  text-shadow: none;
+  filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
+}
