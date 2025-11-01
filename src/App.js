@@ -52,7 +52,7 @@ const DEFAULT_CONFIG = {
       text:
         "Retell AI stack with Twilio, 11Labs, and OpenAI. Integrated via n8n, running on Google Cloud, scheduling with Cal.com.",
       cta: { label: "See the Demo", action: "lastSlide" },
-      media: { type: "video", src: "", poster: "" },
+      media: { type: "embed", src: "https://www.youtube.com/watch?v=kpwNpdEPz7E", poster: "" },
       bgIndex: 0,
       blocks: [
         { icon: "PhoneCall", title: "24/7 Coverage", text: "Never miss a call." },
@@ -299,8 +299,27 @@ function NavButtons({ onPrev, onNext, tone }) {
   );
 }
 
+// Helper function to convert YouTube watch URLs to embed URLs
+function getYouTubeEmbedUrl(url) {
+  if (!url) return "";
+  
+  // If already an embed URL, return as-is
+  if (url.includes("/embed/")) return url;
+  
+  // Extract video ID from watch URL
+  const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
+  if (watchMatch && watchMatch[1]) {
+    return `https://www.youtube.com/embed/${watchMatch[1]}?rel=0&modestbranding=1`;
+  }
+  
+  // If it's already an embed URL or other format, return as-is
+  return url;
+}
+
 function HeroSlide({ s, onNavigate }) {
   const hasVideo = s.media && s.media.type === "video" && s.media.src;
+  const hasEmbed = s.media && s.media.type === "embed" && s.media.src;
+  const embedSrc = hasEmbed ? getYouTubeEmbedUrl(s.media.src) : "";
   
   const handleCTAClick = (e) => {
     if (s.cta?.action === "lastSlide") {
@@ -344,7 +363,16 @@ function HeroSlide({ s, onNavigate }) {
 
       {/* Video directly below */}
       <div className="relative rounded-2xl overflow-hidden shadow-lg border border-black/10 bg-white mt-8 w-full max-w-4xl">
-        {hasVideo ? (
+        {hasEmbed ? (
+          <iframe
+            src={embedSrc}
+            title={s.title || "Video"}
+            className="w-full h-[320px] md:h-[480px]"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+            frameBorder="0"
+          />
+        ) : hasVideo ? (
           <video
             src={s.media.src}
             poster={s.media?.poster}
