@@ -1,5 +1,5 @@
 // Vercel Serverless Function - Contact Form API
-const axios = require('axios');
+// Using Node.js native fetch (available in Node 18+) to avoid dependency bundling issues
 
 // Rate limiting storage (in-memory, will reset on cold start)
 // In production, use Redis or similar for persistent storage
@@ -153,24 +153,22 @@ module.exports = async function handler(req, res) {
       
       try {
         // Wait for webhook with timeout to catch errors immediately
-        const webhookPromise = axios.post(cleanWebhookUrl, payload, {
+        // Using AbortController for timeout with native fetch
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+        
+        const webhookPromise = fetch(cleanWebhookUrl, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
-          timeout: 10000, // 10 second timeout - enough time to detect most errors
-          validateStatus: function (status) {
-            return status >= 200 && status < 500; // Don't throw on 4xx errors
-          },
-          maxRedirects: 5,
-          followRedirects: true,
+          body: JSON.stringify(payload),
+          signal: controller.signal,
         });
         
-        const timeoutPromise = new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Webhook timeout - processing in background')), 8000)
-        );
-        
-        const response = await Promise.race([webhookPromise, timeoutPromise]);
+        const response = await webhookPromise;
+        clearTimeout(timeoutId);
         
         if (response.status >= 200 && response.status < 300) {
           console.log('✅ Successfully forwarded to n8n webhook');
@@ -181,30 +179,26 @@ module.exports = async function handler(req, res) {
         }
       } catch (error) {
         // If timeout, webhook is still processing in background, but log the attempt
-        if (error.message && error.message.includes('timeout')) {
+        if (error.name === 'AbortError' || error.message?.includes('aborted')) {
           console.log('⏱️  Webhook request taking longer than expected, continuing in background...');
           // Continue processing - don't block the response
         } else {
           console.error('❌ Error forwarding to n8n webhook:');
           console.error('Webhook URL:', cleanWebhookUrl);
           console.error('Error message:', error.message);
-          console.error('Error code:', error.code);
+          console.error('Error name:', error.name);
           
-          if (error.response) {
-            console.error('Response status:', error.response.status);
-            console.error('Response data:', error.response.data);
-            if (error.response.status === 404) {
-              console.error('⚠️  404 Error - This usually means:');
-              console.error('   1. The n8n workflow is not activated (check n8n dashboard)');
-              console.error('   2. The webhook URL is incorrect');
-              console.error('   3. The webhook path/ID has changed');
-            }
+          if (error.message?.includes('404')) {
+            console.error('⚠️  404 Error - This usually means:');
+            console.error('   1. The n8n workflow is not activated (check n8n dashboard)');
+            console.error('   2. The webhook URL is incorrect');
+            console.error('   3. The webhook path/ID has changed');
             webhookError = { 
-              status: error.response.status, 
+              status: 404,
               error: error.message,
-              details: error.response.status === 404 ? 'Workflow may not be activated' : undefined
+              details: 'Workflow may not be activated'
             };
-          } else if (error.request) {
+          } else if (error.message?.includes('ECONNREFUSED') || error.message?.includes('fetch failed')) {
             console.error('⚠️  Request was made but no response received');
             console.error('   This could mean:');
             console.error('   1. The webhook URL is unreachable');
@@ -216,22 +210,22 @@ module.exports = async function handler(req, res) {
             };
           } else {
             webhookError = { 
-              error: error.message 
+              error: error.message || 'Unknown error'
             };
           }
         }
       }
       
       // If webhook failed, also start background retry (fire and forget)
-      if (webhookError && !webhookError.error.includes('timeout')) {
+      if (webhookError && !webhookError.error?.includes('timeout') && !webhookError.error?.includes('aborted')) {
         console.log('🔄 Attempting background retry...');
-        axios.post(cleanWebhookUrl, payload, {
+        fetch(cleanWebhookUrl, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             'Accept': 'application/json',
           },
-          timeout: 30000,
-          validateStatus: () => true, // Accept any status for background retry
+          body: JSON.stringify(payload),
         })
         .then((response) => {
           if (response.status >= 200 && response.status < 300) {
