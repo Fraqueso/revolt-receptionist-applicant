@@ -1,5 +1,5 @@
 // Vercel Serverless Function - Contact Form API
-import axios from 'axios';
+const axios = require('axios');
 
 // Rate limiting storage (in-memory, will reset on cold start)
 // In production, use Redis or similar for persistent storage
@@ -53,7 +53,7 @@ function sanitize(str) {
   return String(str).trim().replace(/[<>]/g, '');
 }
 
-export default async function handler(req, res) {
+module.exports = async function handler(req, res) {
   // Only allow POST requests
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
