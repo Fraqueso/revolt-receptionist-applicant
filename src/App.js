@@ -128,9 +128,9 @@ const DEFAULT_CONFIG = {
     {
       layout: "timeline",
       on: "dark",
-      kicker: "Go‑Live",
-      title: "From Zero to Live in a Week",
-      text: "Simple implementation with existing systems.",
+      kicker: "Example Calls and Key Features",
+      title: "Example Calls and Key Features",
+      text: "",
       milestones: [
         { label: "Day 1", value: 10 },
         { label: "Day 3", value: 30 },
@@ -525,30 +525,114 @@ function StatsSlide({ s }) {
 }
 
 function TimelineSlide({ s }) {
-  const max = Math.max(...s.milestones.map((m) => m.value));
+  const chatMessages = [
+    { speaker: "Customer", text: "Hello?" },
+    { speaker: "Assistant", text: "Hey John, are you interested in booking another appointment? I remember last time you had questions about our services, how can i help you today?" },
+    { speaker: "John", text: "Yes, book me on the first available day." },
+    { speaker: "Assistant", text: "Sure thing! Our availability is...." },
+  ];
+
+  const transferSteps = [
+    { text: "*Ringing Receptionist*", italic: true },
+    { text: "*Receptionist Answers*", italic: true },
+    { speaker: "Assistant", text: "Hey! I have a caller by the name of John on the line and he's trying to book an appointment but unsure if he meets our requirements" },
+    { text: "*Directly Transfers call between the receptionist and John*", italic: true },
+  ];
+
   return (
     <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
+        {/* Header section */}
         <div>
           <Pill tone={s.on}>{s.kicker}</Pill>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
           {s.text && <p className="mt-5 text-lg md:text-xl opacity-80 max-w-4xl">{s.text}</p>}
         </div>
-        <div className="mt-16 grid grid-cols-4 gap-6 items-end">
-          {s.milestones.map((m, i) => (
-            <div key={i} className="text-center">
-              <div
-                className={`mx-auto w-16 rounded-xl ${
-                  s.on === "dark"
-                    ? "bg-gradient-to-t from-violet-300 to-white"
-                    : "bg-gradient-to-t from-violet-600 to-fuchsia-400"
-                }`}
-                style={{ height: `${(m.value / max) * 330 + 30}px` }}
-              />
-              <div className="mt-3 text-base opacity-80">{m.label}</div>
+
+        {/* Three callouts below header */}
+        <div className="mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+          {/* Example Chat callout */}
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-6`} style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+            <div className="relative z-10">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                Example Chat <span>💬</span>
+              </h3>
+              <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                {chatMessages.map((msg, i) => (
+                  <div key={i} className="space-y-1">
+                    <div className={`text-xs font-semibold ${
+                      msg.speaker === "Assistant" ? "text-blue-400" : "text-gray-300"
+                    }`}>
+                      {msg.speaker}:
+                    </div>
+                    <div className="text-sm opacity-90 leading-relaxed">
+                      {msg.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
             </div>
-          ))}
+          </div>
+
+          {/* Transfer Call callout */}
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-6`} style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+            <div className="relative z-10">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                Transfer Call <span>🔄</span>
+              </h3>
+              <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                {transferSteps.map((step, i) => (
+                  <div key={i} className="space-y-1">
+                    {step.speaker && (
+                      <div className={`text-xs font-semibold ${
+                        step.speaker === "Assistant" ? "text-blue-400" : "text-gray-300"
+                      }`}>
+                        {step.speaker}:
+                      </div>
+                    )}
+                    <div className={`text-sm opacity-90 leading-relaxed ${step.italic ? "italic" : ""}`}>
+                      {step.text}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Post Call Analysis callout */}
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-6`} style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+            <div className="relative z-10">
+              <h3 className="font-semibold text-lg mb-4 flex items-center gap-2">
+                Post Call Analysis <span>📊</span>
+              </h3>
+              <div className="space-y-4 max-h-[400px] overflow-y-auto">
+                <div className="text-sm opacity-90 leading-relaxed">
+                  The call involved John discussing his desire to book an appointment with the agent, John expressed his interest in TRT for the first time.
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+        
+        {/* Footer callout */}
+        <div className="mt-12 text-center">
+          <p className="text-lg md:text-xl opacity-90">
+            All calls booked from the same phone number, simple & easy
+          </p>
+        </div>
+        
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
       </div>
     </div>
