@@ -53,7 +53,7 @@ const DEFAULT_CONFIG = {
       text:
         "Never Miss a Call. Spend Less Time on Admin & More Time on Clients.",
       cta: { label: "See the Demo", action: "lastSlide" },
-      media: { type: "video", src: "https://drive.google.com/uc?export=download&id=15dKftqCxVZgoC2__cl6KiYlSJPRMxOqO", poster: "" },
+      media: { type: "video", src: "/videos/Mountain%20Muscle.mp4", poster: "" },
       bgIndex: 0,
       blocks: [
         { icon: "PhoneCall", title: "24/7 Coverage", text: "Never miss a call." },
@@ -391,7 +391,12 @@ function HeroSlide({ s, onNavigate }) {
             poster={s.media?.poster}
             className="w-full h-[320px] md:h-[480px] object-cover"
             controls
-          />
+            preload="metadata"
+            playsInline
+          >
+            <source src={s.media.src} type="video/mp4" />
+            Your browser does not support the video tag.
+          </video>
         ) : (
           <div className="w-full h-[320px] md:h-[480px] grid place-items-center bg-gradient-to-br from-violet-100 to-indigo-100">
             <div className="text-center text-black">
