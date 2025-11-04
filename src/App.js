@@ -96,16 +96,34 @@ const DEFAULT_CONFIG = {
       bottomTagline: "No missed calls. No missed money.",
     },
     {
-      layout: "stats",
+      layout: "callouts",
       on: "dark",
-      kicker: "Impact",
-      title: "Quantified Results",
-      stats: [
-        { label: "Avg. Response Time", value: "<2s" },
-        { label: "Booked Rate Lift", value: "+22%" },
-        { label: "Qualification Accuracy", value: ">90%" },
+      bgIndex: 1,
+      kicker: "How It Works",
+      title: "Voice Intake + Booking",
+      blocks: [
+        { 
+          icon: "PhoneCall", 
+          title: "Caller dials your number", 
+          text: "Twilio" 
+        },
+        { 
+          icon: "Sparkles", 
+          title: "AI handles greeting, captures email & need", 
+          text: "Retell.ai + ElevenLabs + OpenAI" 
+        },
+        { 
+          icon: "Calendar", 
+          title: "Schedules\nReschedules\nCancels", 
+          text: "appointments via Cal.com" 
+        },
+        { 
+          icon: "LineChart", 
+          title: "Records basic history", 
+          text: "\"last time you called you were asking about IV Infusion\"" 
+        },
       ],
-      text: "Example benchmarks. Replace with your pilot metrics by market.",
+      footerCallout: "Capture every call.\nSchedule automatically.\nRemember every client.\nStore minimal, non-PHI data securely.",
     },
     {
       layout: "timeline",
@@ -554,12 +572,17 @@ function CalloutsSlide({ s }) {
             }}>
               <div className="relative z-10">
                 <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
-                <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight">{b.title}</h3>
+                <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight whitespace-pre-line">{b.title}</h3>
                 <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
               </div>
             </div>
           ))}
         </div>
+        {s.footerCallout && (
+          <p className="text-lg md:text-xl lg:text-2xl font-semibold mt-12 text-center opacity-90 max-w-4xl mx-auto whitespace-pre-line">
+            {s.footerCallout}
+          </p>
+        )}
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
       </div>
     </div>
