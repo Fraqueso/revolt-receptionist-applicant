@@ -65,17 +65,17 @@ const DEFAULT_CONFIG = {
       layout: "grid",
       on: "dark",
       bgIndex: 1,
-      kicker: "Stack",
-      title: "Retell AI Orchestrated by Revolt",
+      kicker: "The Challenge",
+      title: "Powered by Pain. Solved by You.",
       text:
-        "Twilio for telephony, OpenAI for reasoning, 11Labs for voices. n8n automates workflows. Deployed on Google Cloud. Booking via Cal.com.",
+        "When nobody's available, opportunity slips away. Missed calls, no bookings, and frustrated clients cost you real money... every single day.",
       blocks: [
-        { icon: "PhoneCall", title: "Twilio", text: "Reliable numbers, SIP, IVR." },
-        { icon: "Sparkles", title: "OpenAI", text: "Conversation + intent parsing." },
-        { icon: "Video", title: "11Labs", text: "Real‑time TTS + cloning." },
-        { icon: "Factory", title: "n8n", text: "CRM + ERP integrations." },
-        { icon: "Globe2", title: "Google Cloud", text: "Scalable, secure hosting." },
-        { icon: "Calendar", title: "Cal.com", text: "Instant scheduling + rescheduling." },
+        { icon: "📞", title: "Missed Calls 😠", text: "Every ring unanswered is revenue lost." },
+        { icon: "⏰", title: "No After-Hours Bookings 😢", text: "Your clients are ready when you're closed." },
+        { icon: "😤", title: "Frustrated Clients", text: "They won't wait... they'll go somewhere else." },
+        { icon: "☎️", title: "Staff Stuck on Phones 😩", text: "Your people are tied up instead of showing up." },
+        { icon: "🙄", title: "Visitors Waiting 😕", text: "The floor's full, but the phone keeps stealing attention." },
+        { icon: "💸", title: "Lost Revenue", text: "You worked hard to earn attention! Now you're losing it to silence." },
       ],
     },
     {
@@ -436,7 +436,11 @@ function GridSlide({ s }) {
               }}
             >
               <div className="relative z-10">
-                <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                {ICONS[b.icon] ? (
+                  <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                ) : (
+                  <span className="text-2xl md:text-2xl lg:text-4xl block">{b.icon}</span>
+                )}
                 <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight">{b.title}</h3>
                 <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
               </div>
