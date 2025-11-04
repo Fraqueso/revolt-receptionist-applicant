@@ -51,9 +51,9 @@ const DEFAULT_CONFIG = {
       kicker: "AI Voice Receptionists",
       title: "24/7 Receptionist that Books and Qualifies",
       text:
-        "Retell AI stack with Twilio, 11Labs, and OpenAI. Integrated via n8n, running on Google Cloud, scheduling with Cal.com.",
+        "Never Miss a Call. Spend Less Time on Admin & More Time on Clients.",
       cta: { label: "See the Demo", action: "lastSlide" },
-      media: { type: "embed", src: "https://www.youtube.com/watch?v=kpwNpdEPz7E", poster: "" },
+      media: { type: "video", src: "https://drive.google.com/uc?export=download&id=15dKftqCxVZgoC2__cl6KiYlSJPRMxOqO", poster: "" },
       bgIndex: 0,
       blocks: [
         { icon: "PhoneCall", title: "24/7 Coverage", text: "Never miss a call." },
@@ -273,7 +273,7 @@ function Progress({ index, total, onJump, tone }) {
           key={i}
           onClick={() => onJump(i)}
           aria-label={`Go to slide ${i + 1}`}
-          className={`h-2 rounded-full transition-all ${
+          className={`h-2 rounded-full transition-all hover-glow-alt ${
             i === index ? "w-8 bg-black/80" : "w-2 bg-black/20 hover:bg-black/40"
           }`}
         />
@@ -289,14 +289,14 @@ function NavButtons({ onPrev, onNext, tone }) {
       <div className="flex items-center justify-between h-full">
         <button
           onClick={onPrev}
-          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
+          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full hover-glow-alt ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
           aria-label="Previous slide"
         >
           <ArrowLeft className="w-5 h-5" />
         </button>
         <button
           onClick={onNext}
-          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
+          className={`pointer-events-auto m-3 md:m-6 p-2 rounded-full hover-glow-alt ${base} hover:opacity-95 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
           aria-label="Next slide"
         >
           <ArrowRight className="w-5 h-5" />
@@ -306,14 +306,20 @@ function NavButtons({ onPrev, onNext, tone }) {
   );
 }
 
-// Helper function to convert YouTube watch URLs to embed URLs
+// Helper function to convert YouTube watch URLs and Synthesia share URLs to embed URLs
 function getYouTubeEmbedUrl(url) {
   if (!url) return "";
   
   // If already an embed URL, return as-is
   if (url.includes("/embed/")) return url;
   
-  // Extract video ID from watch URL
+  // Handle Synthesia share URLs - use the share link directly as it's already embeddable
+  if (url.includes("share.synthesia.io")) {
+    // Synthesia share links can be embedded directly in iframes
+    return url;
+  }
+  
+  // Extract video ID from YouTube watch URL
   const watchMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([^&\s]+)/);
   if (watchMatch && watchMatch[1]) {
     return `https://www.youtube.com/embed/${watchMatch[1]}?rel=0&modestbranding=1`;
@@ -360,7 +366,7 @@ function HeroSlide({ s, onNavigate }) {
         <a
           href={s.cta.href || "#"}
           onClick={handleCTAClick}
-          className={`inline-flex items-center gap-3 rounded-full px-8 py-4 text-lg font-semibold mt-8 ${
+          className={`inline-flex items-center gap-3 rounded-full px-8 py-4 text-lg font-semibold mt-8 hover-glow-alt ${
             s.on === "dark" ? "bg-white text-black" : "bg-black text-white"
           } hover:scale-105 transition-transform shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}
         >
@@ -369,7 +375,7 @@ function HeroSlide({ s, onNavigate }) {
       )}
 
       {/* Video directly below */}
-      <div className="relative rounded-2xl overflow-hidden shadow-lg border border-black/10 bg-white mt-8 w-full max-w-4xl">
+      <div className="relative rounded-2xl overflow-hidden mt-8 w-full max-w-4xl">
         {hasEmbed ? (
           <iframe
             src={embedSrc}
@@ -417,7 +423,7 @@ function GridSlide({ s }) {
           {s.blocks?.map((b, i) => (
             <div 
               key={i} 
-              className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] transition-transform ${
+              className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] transition-transform hover-glow-alt ${
                 s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
               } p-4 md:p-4 lg:p-8`} 
               style={{
@@ -449,7 +455,7 @@ function CardsSlide({ s }) {
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-9">
           {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-[28px] border p-9 relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            <div key={i} className={`rounded-[28px] border p-9 relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
             }`} style={{
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -484,7 +490,7 @@ function StatsSlide({ s }) {
         </div>
         <div className="mt-16 grid grid-cols-1 sm:grid-cols-3 gap-9">
           {s.stats?.map((st, i) => (
-            <div key={i} className={`rounded-[28px] text-center p-9 border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            <div key={i} className={`rounded-[28px] text-center p-9 border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
             }`} style={{
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -543,7 +549,7 @@ function CalloutsSlide({ s }) {
         </div>
         <div className="mt-16 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-3 lg:gap-9">
           {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
             } p-4 md:p-4 lg:p-9`} style={{
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -597,7 +603,7 @@ function LogosSlide({ s }) {
         {s.text && <p className="mt-5 text-lg md:text-xl opacity-80 max-w-4xl mx-auto">{s.text}</p>}
         <div className="mt-16 grid grid-cols-2 md:grid-cols-6 gap-9">
           {s.logos?.map((l, i) => (
-            <div key={i} className={`rounded-[28px] p-9 text-base border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            <div key={i} className={`rounded-[28px] p-9 text-base border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
             }`} style={{
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -623,7 +629,7 @@ function PricingSlide({ s }) {
         {s.text && <p className="mt-5 text-lg md:text-xl opacity-80 max-w-4xl mx-auto">{s.text}</p>}
         <div className="mt-16 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-4 md:gap-3 lg:gap-9">
           {s.tiers?.map((t, i) => (
-            <div key={i} className={`rounded-[28px] text-left border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            <div key={i} className={`rounded-[28px] text-left border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
             } p-4 md:p-5 lg:p-9`} style={{
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -766,7 +772,7 @@ function ContactSlide({ s }) {
           </h2>
           {s.text && <p className="text-base md:text-lg opacity-90 mx-auto max-w-2xl -mt-[5px]">{s.text}</p>}
         </div>
-        <div className={`rounded-[28px] overflow-hidden border p-9 mt-10 relative backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+        <div className={`rounded-[28px] overflow-hidden border p-9 mt-10 relative backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] always-glow ${
           s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
         }`} style={{
           boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
@@ -837,7 +843,7 @@ function ContactSlide({ s }) {
             )}
             <button 
               type="submit" 
-              className={`rounded-xl px-8 py-5 text-lg font-semibold text-white transition-all inline-flex items-center gap-3 ${
+              className={`rounded-xl px-8 py-5 text-lg font-semibold text-white transition-all inline-flex items-center gap-3 hover-glow-alt ${
                 isSubmitting 
                   ? 'bg-gray-400 cursor-not-allowed shadow-lg shadow-gray-400/40' 
                   : 'bg-gradient-to-r from-blue-600 to-blue-400 hover:from-blue-700 hover:to-blue-500 shadow-2xl shadow-blue-600/60 hover:shadow-blue-600/70'
@@ -871,7 +877,7 @@ function ContactSlide({ s }) {
             <p className="mt-4 text-lg">Please check the phone associated with that phone number. It will be having a phone call.</p>
             <button 
               onClick={() => setShowModal(false)} 
-              className="mt-6 rounded-xl bg-black text-white px-8 py-4 text-lg font-semibold hover:opacity-90 transition-opacity"
+              className="mt-6 rounded-xl bg-black text-white px-8 py-4 text-lg font-semibold hover:opacity-90 transition-opacity hover-glow-alt"
             >
               Close
             </button>
@@ -1029,13 +1035,13 @@ export default function App() {
           <Editor value={json} onChange={setJson} />
           <div className="fixed bottom-5 right-5 z-50 flex gap-2">
             <button
-              className="rounded-full bg-white border border-black/10 shadow px-4 py-2"
+              className="rounded-full bg-white border border-black/10 shadow px-4 py-2 hover-glow-alt"
               onClick={() => setEditing(false)}
             >
               Cancel
             </button>
             <button
-              className="rounded-full bg-black text-white shadow px-4 py-2"
+              className="rounded-full bg-black text-white shadow px-4 py-2 hover-glow-alt"
               onClick={saveJson}
             >
               Save Changes

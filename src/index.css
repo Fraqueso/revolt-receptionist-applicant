@@ -39,3 +39,89 @@ h1[class*="bg-clip-text"], h2[class*="bg-clip-text"], h3[class*="bg-clip-text"] 
   text-shadow: none;
   filter: drop-shadow(0 2px 8px rgba(0, 0, 0, 0.2));
 }
+
+/* Glowing border hover effect for tiles and buttons */
+.hover-glow {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hover-glow::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  padding: 2px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0.4));
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+  z-index: -1;
+}
+
+.hover-glow:hover::before {
+  opacity: 1;
+  animation: glow-pulse 2s ease-in-out infinite;
+}
+
+.hover-glow:hover {
+  box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 
+              0 0 40px rgba(255, 255, 255, 0.2),
+              0 0 60px rgba(255, 255, 255, 0.1);
+}
+
+@keyframes glow-pulse {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(255, 255, 255, 0.4), 
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 0 60px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.6), 
+                0 0 60px rgba(255, 255, 255, 0.3),
+                0 0 90px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Alternative approach using box-shadow directly for better browser support */
+.hover-glow-alt {
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+.hover-glow-alt:hover {
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8),
+              0 0 20px rgba(255, 255, 255, 0.4), 
+              0 0 40px rgba(255, 255, 255, 0.2),
+              0 0 60px rgba(255, 255, 255, 0.1);
+  animation: glow-pulse-alt 2s ease-in-out infinite;
+}
+
+@keyframes glow-pulse-alt {
+  0%, 100% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8),
+                0 0 20px rgba(255, 255, 255, 0.4), 
+                0 0 40px rgba(255, 255, 255, 0.2),
+                0 0 60px rgba(255, 255, 255, 0.1);
+  }
+  50% {
+    box-shadow: 0 0 0 1px rgba(255, 255, 255, 1),
+                0 0 30px rgba(255, 255, 255, 0.6), 
+                0 0 60px rgba(255, 255, 255, 0.3),
+                0 0 90px rgba(255, 255, 255, 0.15);
+  }
+}
+
+/* Always-on glow effect (for elements that should glow permanently) */
+.always-glow {
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 0 1px rgba(255, 255, 255, 0.8),
+              0 0 20px rgba(255, 255, 255, 0.4), 
+              0 0 40px rgba(255, 255, 255, 0.2),
+              0 0 60px rgba(255, 255, 255, 0.1);
+  animation: glow-pulse-alt 2s ease-in-out infinite;
+}
