@@ -79,32 +79,38 @@ const DEFAULT_CONFIG = {
       ],
     },
     {
-      layout: "cards",
+      layout: "solution",
       on: "dark",
       bgIndex: 2,
-      kicker: "Use Cases",
-      title: "Answer, Qualify, and Book",
-      text: "Inbound and outbound assistants that handle the entire front desk process.",
-      blocks: [
+      kicker: "The Solution",
+      title: "Retell Voice AI by Revolt",
+      tagline: "24/7 AI Receptionist that answers, qualifies, and books instantly.",
+      features: [
+        "Answers every call.",
+        "Books directly via Cal.com.",
+        "Handles FAQs.",
+        "Transfers complex calls or falls back to you.",
+        "Keeps call history synced with your tools.",
+        "Stays HIPAA-light. we only collect non-sensitive data.",
+      ],
+      stacks: [
         {
-          icon: "CheckCircle2",
-          title: "Inbound Reception",
-          text: "Answers calls, captures intent, checks availability, books on Cal.com.",
-          badge: "Core",
+          title: "Voice Stack",
+          tools: "Twilio, 11Labs, Retell AI",
+          description: "Calls, voices, real-time response.",
         },
         {
-          icon: "BarChart3",
-          title: "Lead Qualification",
-          text: "Dynamic Q&A to score leads, push to CRM, route hot prospects.",
-          badge: "+AOV",
+          title: "Intelligence Stack",
+          tools: "OpenAI, n8n, Forms",
+          description: "Automate workflows, parse intent, act fast.",
         },
         {
-          icon: "Rocket",
-          title: "Outbound Campaigns",
-          text: "Upload CSV. Dial warm/cold lists, follow scripts, demo/appointment set.",
-          badge: "CSV",
+          title: "Infrastructure Stack",
+          tools: "Google Cloud, Workspace, Cal.com",
+          description: "Host, sync, and schedule everything.",
         },
       ],
+      bottomTagline: "No missed calls. No missed money.",
     },
     {
       layout: "stats",
@@ -577,6 +583,135 @@ function CalloutsSlide({ s }) {
   );
 }
 
+function SolutionSlide({ s }) {
+  return (
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16 py-12">
+      <div className="max-w-7xl w-full">
+        {/* Header */}
+        <div className="text-center mb-12">
+          <Pill tone={s.on}>{s.kicker}</Pill>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5 bg-gradient-to-r from-stone-50 to-cyan-400 bg-clip-text text-transparent">
+            {s.title}
+          </h2>
+          {s.tagline && (
+            <p className="mt-5 text-lg md:text-xl lg:text-2xl opacity-90 max-w-4xl mx-auto">
+              {s.tagline}
+            </p>
+          )}
+        </div>
+
+        {/* Features Grid */}
+        {s.features && s.features.length > 0 && (
+          <div className="mb-12">
+            <h3 className="text-2xl md:text-3xl font-bold mb-6 text-center">It:</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {s.features.map((feature, i) => (
+                <div
+                  key={i}
+                  className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+                    s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+                  } p-6`}
+                  style={{
+                    boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+                  }}
+                >
+                  <div className="relative z-10 flex items-start gap-3">
+                    <CheckCircle2 className="w-5 h-5 flex-shrink-0 mt-0.5" />
+                    <p className="text-base md:text-lg opacity-90 leading-relaxed">{feature}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Stack Tiles */}
+        {s.stacks && s.stacks.length > 0 && (
+          <div className="mb-12">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {s.stacks.map((stack, i) => (
+                <div
+                  key={i}
+                  className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+                    s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+                  } p-6`}
+                  style={{
+                    boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+                  }}
+                >
+                  <div className="relative z-10">
+                    <h3 className="text-lg md:text-xl font-bold mb-2">{stack.title}</h3>
+                    <p className="text-sm md:text-base font-semibold opacity-90 mb-2">{stack.tools}</p>
+                    <p className="text-sm md:text-base opacity-80 leading-relaxed">{stack.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Center Flow Diagram */}
+        <div className="mb-12">
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] always-glow ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-8 md:p-12`}
+          style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+            <div className="relative z-10">
+              <div className="flex flex-col md:flex-row items-center justify-center gap-4 md:gap-8">
+                {/* Caller */}
+                <div className="flex flex-col items-center gap-3">
+                  <div className="text-5xl md:text-6xl">📞</div>
+                  <div className="text-lg md:text-xl font-semibold">Caller</div>
+                </div>
+
+                {/* Arrow */}
+                <ArrowRight className="w-8 h-8 md:w-12 md:h-12 opacity-70" />
+
+                {/* Voice AI Assistant */}
+                <div className="flex flex-col items-center gap-3">
+                  <div className="text-5xl md:text-6xl">🤖</div>
+                  <div className="text-lg md:text-xl font-semibold">Voice AI Assistant</div>
+                </div>
+
+                {/* Arrow */}
+                <ArrowRight className="w-8 h-8 md:w-12 md:h-12 opacity-70" />
+
+                {/* Outcomes */}
+                <div className="flex flex-col md:flex-row items-center gap-4 md:gap-6">
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-4xl md:text-5xl">📅</div>
+                    <div className="text-base md:text-lg font-medium">Book</div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-4xl md:text-5xl">🧠</div>
+                    <div className="text-base md:text-lg font-medium">FAQ</div>
+                  </div>
+                  <div className="flex flex-col items-center gap-2">
+                    <div className="text-4xl md:text-5xl">📲</div>
+                    <div className="text-base md:text-lg font-medium">Transfer to Owner</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Bottom Tagline */}
+        <div className="text-center">
+          {s.bottomTagline && (
+            <p className="text-2xl md:text-3xl lg:text-4xl font-bold mb-2">
+              {s.bottomTagline}
+            </p>
+          )}
+          <p className="text-base md:text-lg opacity-70">Powered by Revolt.</p>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function MediaSlide({ s }) {
   return (
     <div className="flex flex-col justify-center items-center min-h-[100dvh] px-4 sm:px-6 md:px-16">
@@ -912,6 +1047,8 @@ function Slide({ data, onNavigateToLast }) {
       return <TimelineSlide s={data} />;
     case "callouts":
       return <CalloutsSlide s={data} />;
+    case "solution":
+      return <SolutionSlide s={data} />;
     case "media":
       return <MediaSlide s={data} />;
     case "logos":
