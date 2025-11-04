@@ -21,6 +21,7 @@ import {
   PhoneCall,
   Video,
   Calendar,
+  FileText,
 } from "lucide-react";
 
 /**
@@ -139,16 +140,10 @@ const DEFAULT_CONFIG = {
       ],
     },
     {
-      layout: "callouts",
+      layout: "reporting",
       on: "dark",
-      kicker: "Highlights",
-      title: "Why Revolt",
-      blocks: [
-        { icon: "ShieldCheck", title: "Compliance", text: "PII handling, call consent, regional storage." },
-        { icon: "Globe2", title: "Multilingual", text: "20+ languages with locale logic." },
-        { icon: "Users", title: "CRM Ready", text: "HubSpot, Salesforce, custom APIs via n8n." },
-        { icon: "Lightbulb", title: "Smart Routing", text: "Escalate to humans when needed." },
-      ],
+      kicker: "Reporting & Cost Transparency",
+      title: "Reporting & Cost Transparency",
     },
     {
       layout: "media",
@@ -217,6 +212,7 @@ const ICONS = {
   PhoneCall,
   Video,
   Calendar,
+  FileText,
 };
 
 function Icon({ name, className = "w-5 h-5" }) {
@@ -892,6 +888,130 @@ function PricingSlide({ s }) {
   );
 }
 
+function ReportingSlide({ s }) {
+  // Sample data for the graph showing profit outpacing cost
+  // Cost grows linearly, profit grows exponentially
+  // Dollar symbols: $, $$, $$$, $$$$, $$$$$
+  const graphData = [
+    { month: "Jan", cost: "$", profit: "$" },
+    { month: "Feb", cost: "$$", profit: "$$" },
+    { month: "Mar", cost: "$$$", profit: "$$$" },
+    { month: "Apr", cost: "$$$$", profit: "$$$$" },
+    { month: "May", cost: "$$$$$", profit: "$$$$$" },
+    { month: "Jun", cost: "$$$$$", profit: "$$$$$" },
+  ];
+
+  return (
+    <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16 py-12">
+      <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
+        {/* Header */}
+        <div className="mb-12">
+          <Pill tone={s.on}>{s.kicker}</Pill>
+          <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
+        </div>
+
+        {/* Content tiles side by side */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-12">
+          {/* Content with bullet list */}
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-6 md:p-8 lg:p-12`} style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+            <div className="relative z-10">
+              <div className="space-y-4 md:space-y-6">
+                <div>
+                  <h3 className="text-xl md:text-2xl font-semibold mb-4">At end of each call:</h3>
+                  <ul className="space-y-3 md:space-y-4 text-base md:text-lg opacity-90 list-disc list-inside">
+                    <li>Cost</li>
+                    <li>Duration</li>
+                    <li>Full transcript</li>
+                    <li>Summary</li>
+                    <li>Sentiment</li>
+                  </ul>
+                </div>
+                <div className="mt-6 md:mt-8 pt-6 md:pt-8 border-t border-white/20">
+                  <p className="text-base md:text-lg opacity-90">
+                    <strong>Dashboard:</strong> "10 calls today, avg duration 3:42, cost $X"
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Graph showing profit outpacing cost */}
+          <div className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] ${
+            s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+          } p-6 md:p-8 lg:p-12`} style={{
+            boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+          }}>
+          <div className="relative z-10">
+            <h3 className="text-xl md:text-2xl font-semibold mb-6">Profit vs Cost Over Time</h3>
+            
+            {/* Simple bar chart */}
+            <div className="space-y-4">
+              {/* Legend */}
+              <div className="flex items-center gap-6 text-sm md:text-base mb-6">
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-red-500 rounded"></div>
+                  <span className="opacity-90">Cost</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <div className="w-4 h-4 bg-green-500 rounded"></div>
+                  <span className="opacity-90">Profit</span>
+                </div>
+              </div>
+
+              {/* Individual graphs for each month */}
+              <div className="grid grid-cols-6 gap-3">
+                {graphData.map((d, i) => {
+                  // Fixed percentage heights for each month
+                  const redHeights = [10, 18, 26, 34, 42, 50]; // Red bar percentages
+                  const greenHeights = [15, 32, 49, 66, 83, 100]; // Green bar percentages
+                  
+                  return (
+                    <div key={i} className="flex flex-col">
+                      {/* Individual graph container */}
+                      <div className="relative h-64 md:h-80 flex items-end gap-1 overflow-hidden">
+                        {/* Cost bar */}
+                        <motion.div 
+                          className="flex-1 bg-red-500/80 rounded-t transition-all hover:bg-red-500 hover:opacity-100"
+                          style={{ height: `${redHeights[i]}%`, minHeight: '4px' }}
+                          title={`Cost: ${d.cost}`}
+                          initial={{ opacity: 0, y: 320 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 1.0, delay: i * 0.2, ease: "easeOut" }}
+                        />
+                        {/* Profit bar */}
+                        <motion.div 
+                          className="flex-1 bg-green-500/80 rounded-t transition-all hover:bg-green-500 hover:opacity-100"
+                          style={{ height: `${greenHeights[i]}%`, minHeight: '4px' }}
+                          title={`Profit: ${d.profit}`}
+                          initial={{ opacity: 0, y: 320 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 1.0, delay: i * 0.2 + 0.15, ease: "easeOut" }}
+                        />
+                      </div>
+                      
+                      {/* Month label */}
+                      <div className="text-center mt-2">
+                        <span className="text-xs md:text-sm font-semibold opacity-90">Month {i + 1}</span>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        </div>
+        </div>
+
+        <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
+      </div>
+    </div>
+  );
+}
+
 function ContactSlide({ s }) {
   const [phone, setPhone] = useState("");
   const [name, setName] = useState("");
@@ -1145,6 +1265,8 @@ function Slide({ data, onNavigateToLast }) {
       return <LogosSlide s={data} />;
     case "pricing":
       return <PricingSlide s={data} />;
+    case "reporting":
+      return <ReportingSlide s={data} />;
     case "contact":
       return <ContactSlide s={data} />;
     default:
