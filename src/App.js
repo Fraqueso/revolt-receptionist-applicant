@@ -93,23 +93,6 @@ const DEFAULT_CONFIG = {
         "Keeps call history synced with your tools.",
         "Stays HIPAA-light. we only collect non-sensitive data.",
       ],
-      stacks: [
-        {
-          title: "Voice Stack",
-          tools: "Twilio, 11Labs, Retell AI",
-          description: "Calls, voices, real-time response.",
-        },
-        {
-          title: "Intelligence Stack",
-          tools: "OpenAI, n8n, Forms",
-          description: "Automate workflows, parse intent, act fast.",
-        },
-        {
-          title: "Infrastructure Stack",
-          tools: "Google Cloud, Workspace, Cal.com",
-          description: "Host, sync, and schedule everything.",
-        },
-      ],
       bottomTagline: "No missed calls. No missed money.",
     },
     {
