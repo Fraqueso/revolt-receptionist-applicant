@@ -266,21 +266,36 @@ function SectionShell({ children, s, config }) {
   );
 }
 
-function Progress({ index, total, onJump, tone }) {
+function Progress({ index, total, onJump, tone, slides }) {
+  const [hoveredIndex, setHoveredIndex] = useState(null);
+
   return (
     <div className={`fixed bottom-4 left-1/2 -translate-x-1/2 z-40 flex items-center gap-2 ${
-      tone === "dark" ? "bg-white/80" : "bg-black/80"
-    } backdrop-blur rounded-full px-3 py-2 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}>
-      {Array.from({ length: total }).map((_, i) => (
-        <button
-          key={i}
-          onClick={() => onJump(i)}
-          aria-label={`Go to slide ${i + 1}`}
-          className={`h-2 rounded-full transition-all hover-glow-alt ${
-            i === index ? "w-8 bg-black/80" : "w-2 bg-black/20 hover:bg-black/40"
-          }`}
-        />
-      ))}
+      tone === "dark" ? "bg-white/70" : "bg-black/70"
+    } backdrop-blur rounded-full px-4 py-3 border border-black/10 shadow-[0_4px_8px_rgba(0,0,0,0.15)]`}>
+      {Array.from({ length: total }).map((_, i) => {
+        const slideKicker = slides?.[i]?.kicker || `Slide ${i + 1}`;
+        return (
+          <div key={i} className="relative group">
+            <button
+              onClick={() => onJump(i)}
+              aria-label={`Go to slide ${i + 1}: ${slideKicker}`}
+              onMouseEnter={() => setHoveredIndex(i)}
+              onMouseLeave={() => setHoveredIndex(null)}
+              className={`h-3 rounded-full transition-all hover-glow-alt ${
+                i === index ? "w-12 bg-black/70" : "w-3 bg-black/20 hover:bg-black/40"
+              }`}
+            />
+            {hoveredIndex === i && (
+              <div className={`absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap ${
+                tone === "dark" ? "bg-black/90 text-white" : "bg-white/90 text-black"
+              } shadow-lg border border-black/10 z-50`}>
+                {slideKicker}
+              </div>
+            )}
+          </div>
+        );
+      })}
     </div>
   );
 }
@@ -1385,7 +1400,7 @@ export default function App() {
         onNext={() => setIndex((i) => Math.min(i + 1, config.slides.length - 1))}
         tone={tone}
       />
-      <Progress index={index} total={config.slides.length} onJump={setIndex} tone={tone} />
+      <Progress index={index} total={config.slides.length} onJump={setIndex} tone={tone} slides={config.slides} />
 
       {/* Editor overlay */}
       {editing && (
