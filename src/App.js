@@ -102,6 +102,7 @@ const DEFAULT_CONFIG = {
       bgIndex: 1,
       kicker: "How It Works",
       title: "Voice Intake + Booking",
+      gridCols: 2,
       blocks: [
         { 
           icon: "PhoneCall", 
@@ -146,16 +147,43 @@ const DEFAULT_CONFIG = {
       title: "Reporting & Cost Transparency",
     },
     {
-      layout: "media",
+      layout: "callouts",
       on: "dark",
       bgIndex: 1,
-      kicker: "Flow",
-      title: "From Call to Calendar",
-      text: "Intent → qualification → policy check → book/reschedule → CRM update → follow‑ups.",
-      media: {
-        type: "image",
-        src: "https://cdn.midjourney.com/cbf3f066-9479-4a74-bbe1-e6a57afb80cb/0_0.png",
-      },
+      kicker: "Security",
+      title: "Security & Compliance Handled",
+      blocks: [
+        { 
+          icon: "🛡️", 
+          title: "No PHI Storage", 
+          text: "We never store PHI ... only name, email, phone, and general interest" 
+        },
+        { 
+          icon: "🔒", 
+          title: "Encrypted Data", 
+          text: "All data is encrypted in transit and stored securely using standard TLS and AES-256 encryption" 
+        },
+        { 
+          icon: "✅", 
+          title: "Industry Standards", 
+          text: "Our stack - Twilio, Retell.ai, OpenAI - meets industry-standard security benchmarks" 
+        },
+        { 
+          icon: "👥", 
+          title: "Access Control", 
+          text: "Admin access is limited and tracked through Google Workspace" 
+        },
+        { 
+          icon: "🔄", 
+          title: "Built-in Protection", 
+          text: "Backups, fallbacks, and access controls are built into every layer" 
+        },
+        { 
+          icon: "📋", 
+          title: "Compliance Reviews", 
+          text: "Regular reviews ensure all integrations stay compliant and up to date" 
+        },
+      ],
     },
     {
       layout: "logos",
@@ -658,7 +686,7 @@ function CalloutsSlide({ s }) {
           <Pill tone={s.on}>{s.kicker}</Pill>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
         </div>
-        <div className="mt-16 grid grid-cols-1 md:grid-cols-4 lg:grid-cols-4 gap-4 md:gap-3 lg:gap-9">
+        <div className={`mt-16 grid grid-cols-1 ${s.gridCols === 2 ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-3'} gap-4 md:gap-3 lg:gap-9`}>
           {s.blocks?.map((b, i) => (
             <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
               s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
@@ -666,7 +694,11 @@ function CalloutsSlide({ s }) {
               boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
             }}>
               <div className="relative z-10">
-                <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                {b.icon && /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u.test(b.icon) ? (
+                  <span className="text-2xl md:text-3xl lg:text-4xl block mb-2 md:mb-3">{b.icon}</span>
+                ) : (
+                  <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+                )}
                 <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight whitespace-pre-line">{b.title}</h3>
                 <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
               </div>
@@ -830,7 +862,7 @@ function MediaSlide({ s }) {
           <div className="absolute top-0 left-0 right-0 p-6 sm:p-9 md:p-12 lg:p-16">
             <Pill tone={s.on}>{s.kicker}</Pill>
             <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold tracking-tight mt-3 sm:mt-4">{s.title}</h2>
-            {s.text && <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl lg:text-2xl opacity-90 max-w-4xl">{s.text}</p>}
+            {s.text && <p className="mt-3 sm:mt-4 text-base sm:text-lg md:text-xl lg:text-2xl opacity-90 max-w-4xl whitespace-pre-line">{s.text}</p>}
           </div>
         </div>
         <p className="text-base md:text-lg opacity-70 mt-8 text-center">Powered by Revolt.</p>
