@@ -313,7 +313,7 @@ function SectionShell({ children, s, config }) {
   const isDark = s.on === "dark";
   return (
     <div
-      className="min-h-[100dvh] w-full flex flex-col"
+      className="min-h-[100dvh] w-full flex flex-col relative"
       style={
         bgUrl
           ? {
@@ -331,7 +331,15 @@ function SectionShell({ children, s, config }) {
             }
       }
     >
-      {children}
+      {/* Slide glow effect - background element that doesn't interfere with content */}
+      <div className="slide-glow-container">
+        <div className="slide-glow-layer slide-glow-layer-1"></div>
+        <div className="slide-glow-layer slide-glow-layer-2"></div>
+      </div>
+      {/* Content wrapper - ensures content appears above glow */}
+      <div className="relative z-10 flex-1 flex flex-col">
+        {children}
+      </div>
     </div>
   );
 }

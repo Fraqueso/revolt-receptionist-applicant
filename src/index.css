@@ -125,3 +125,70 @@ h1[class*="bg-clip-text"], h2[class*="bg-clip-text"], h3[class*="bg-clip-text"] 
               0 0 60px rgba(255, 255, 255, 0.1);
   animation: glow-pulse-alt 2s ease-in-out infinite;
 }
+
+/* Slide background glow effect - two overlapping layers pulsing at different speeds */
+.slide-glow-container {
+  position: fixed;
+  top: 0;
+  left: 60px;
+  right: 60px;
+  bottom: 80px;
+  pointer-events: none;
+  z-index: 1;
+  overflow: hidden;
+}
+
+@media (min-width: 768px) {
+  .slide-glow-container {
+    left: 72px;
+    right: 72px;
+  }
+}
+
+.slide-glow-layer {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.slide-glow-layer-1 {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(139, 92, 246, 0.15) 0%,
+    rgba(139, 92, 246, 0.08) 40%,
+    transparent 70%
+  );
+  animation: slide-glow-pulse-1 8s ease-in-out infinite;
+}
+
+.slide-glow-layer-2 {
+  background: radial-gradient(
+    ellipse at center,
+    rgba(59, 130, 246, 0.12) 0%,
+    rgba(59, 130, 246, 0.06) 40%,
+    transparent 70%
+  );
+  animation: slide-glow-pulse-2 6s ease-in-out infinite;
+}
+
+@keyframes slide-glow-pulse-1 {
+  0%, 100% {
+    opacity: 0.4;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes slide-glow-pulse-2 {
+  0%, 100% {
+    opacity: 0.3;
+    transform: scale(1.05);
+  }
+  50% {
+    opacity: 0.6;
+    transform: scale(1.15);
+  }
+}
