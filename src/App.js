@@ -212,15 +212,37 @@ const DEFAULT_CONFIG = {
       ],
     },
     {
-      layout: "pricing",
+      layout: "callouts",
       on: "dark",
-      kicker: "Plans",
-      title: "Simple, usage‑based tiers",
-      text: "Transparent minutes + seats. Month‑to‑month pilot available.",
-      tiers: [
-        { name: "Pilot", price: "from $", features: ["Single number", "1 flow", "Email support"] },
-        { name: "Growth", price: "$$", features: ["Multi‑number", "CSV outbound", "Phone support"] },
-        { name: "Scale", price: "Custom", features: ["SLA", "Dedicated success", "Compliance review"] },
+      bgIndex: 1,
+      kicker: "Next Steps & Implementation",
+      title: "Next Steps & Implementation",
+      blocks: [
+        { 
+          icon: "CheckCircle2", 
+          title: "Step 1", 
+          text: "Provision Twilio number + Cal.com embed." 
+        },
+        { 
+          icon: "CheckCircle2", 
+          title: "Step 2", 
+          text: "Set up voice flow in Retell.ai + test call scenario." 
+        },
+        { 
+          icon: "CheckCircle2", 
+          title: "Step 3", 
+          text: "Connect n8n workflow, Google Sheets dashboard, reporting." 
+        },
+        { 
+          icon: "CheckCircle2", 
+          title: "Step 4", 
+          text: "Security check, go-live." 
+        },
+        { 
+          icon: "Sparkles", 
+          title: "Optional", 
+          text: "Custom admin UI, deeper analytics, AI-based upsell suggestions + more." 
+        },
       ],
     },
     {
@@ -705,6 +727,28 @@ function CalloutsSlide({ s }) {
     ? ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛", "💵", "💵", "💵", "💵", "💵", "💵", "💵"]
     : [];
 
+  // Check if this is the Next Steps & Implementation slide
+  const isNextStepsSlide = s.kicker === "Next Steps & Implementation";
+
+  // Helper function to render a block tile
+  const renderBlock = (b, i, className = "") => (
+    <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
+      s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
+    } p-4 md:p-4 lg:p-9 ${className}`} style={{
+      boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
+    }}>
+      <div className="relative z-10">
+        {b.icon && /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u.test(b.icon) ? (
+          <span className="text-2xl md:text-3xl lg:text-4xl block mb-2 md:mb-3">{b.icon}</span>
+        ) : (
+          <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
+        )}
+        <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight whitespace-pre-line">{b.title}</h3>
+        <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
+      </div>
+    </div>
+  );
+
   return (
     <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
@@ -719,25 +763,25 @@ function CalloutsSlide({ s }) {
             ))}
           </div>
         )}
-        <div className={`mt-16 grid grid-cols-1 ${s.gridCols === 2 ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-3'} gap-4 md:gap-3 lg:gap-9`}>
-          {s.blocks?.map((b, i) => (
-            <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
-              s.on === "dark" ? "border-white/35 bg-white/10" : "border-black/35 bg-white/10"
-            } p-4 md:p-4 lg:p-9`} style={{
-              boxShadow: "0 10px 28px rgba(0,0,0,0.10), inset 0 2px 4px rgba(255,255,255,0.55), inset 0 -2px 4px rgba(0,0,0,0.20)"
-            }}>
-              <div className="relative z-10">
-                {b.icon && /^[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}]/u.test(b.icon) ? (
-                  <span className="text-2xl md:text-3xl lg:text-4xl block mb-2 md:mb-3">{b.icon}</span>
-                ) : (
-                  <Icon name={b.icon} className="w-5 h-5 md:w-5 md:h-5 lg:w-8 lg:h-8" />
-                )}
-                <h3 className="font-semibold mt-3 md:mt-2 lg:mt-5 text-sm md:text-xs lg:text-lg leading-tight md:leading-tight whitespace-pre-line">{b.title}</h3>
-                <p className="text-xs md:text-[10px] lg:text-base opacity-90 mt-2 md:mt-1.5 lg:mt-3 leading-tight md:leading-tight">{b.text}</p>
-              </div>
-            </div>
-          ))}
-        </div>
+        {isNextStepsSlide && s.blocks?.length === 5 ? (
+          // Custom layout for Next Steps slide: Steps 1-4 on left in 2x2 grid, Optional on right (4 tiles tall)
+          <div className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-3 lg:gap-9">
+            {/* Step 1 - top left */}
+            {renderBlock(s.blocks[0], 0)}
+            {/* Step 2 - top right */}
+            {renderBlock(s.blocks[1], 1)}
+            {/* Step 3 - bottom left */}
+            {renderBlock(s.blocks[2], 2)}
+            {/* Step 4 - bottom right */}
+            {renderBlock(s.blocks[3], 3)}
+            {/* Optional tile - spans 2 rows, positioned on the right */}
+            {renderBlock(s.blocks[4], 4, "md:row-span-2 md:col-start-3 md:row-start-1")}
+          </div>
+        ) : (
+          <div className={`mt-16 grid grid-cols-1 ${s.gridCols === 2 ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-3'} gap-4 md:gap-3 lg:gap-9`}>
+            {s.blocks?.map((b, i) => renderBlock(b, i))}
+          </div>
+        )}
         {s.footerCallout && (
           <p className="text-lg md:text-xl lg:text-2xl font-semibold mt-12 text-center opacity-90 max-w-4xl mx-auto whitespace-pre-line">
             {s.footerCallout}
@@ -1201,9 +1245,12 @@ function ContactSlide({ s }) {
       <div className="max-w-6xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
         <div className="text-center space-y-5">
           <Pill tone={s.on}>{s.kicker}</Pill>
-          <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight pb-2 bg-gradient-to-r from-stone-50 to-cyan-400 bg-clip-text text-transparent">
-            {s.title}
-          </h2>
+          <div className="flex items-center justify-center gap-4">
+            <h2 className="text-4xl md:text-6xl font-extrabold tracking-tight leading-tight pb-2 bg-gradient-to-r from-stone-50 to-cyan-400 bg-clip-text text-transparent">
+              {s.title}
+            </h2>
+            <span className="text-4xl md:text-6xl pb-2">📞</span>
+          </div>
           {s.text && <p className="text-base md:text-lg opacity-90 mx-auto max-w-2xl -mt-[5px]">{s.text}</p>}
         </div>
         <div className={`rounded-[28px] overflow-hidden border p-9 mt-10 relative backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] always-glow ${
