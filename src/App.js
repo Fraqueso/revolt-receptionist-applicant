@@ -22,6 +22,8 @@ import {
   Video,
   Calendar,
   FileText,
+  Clock,
+  DollarSign,
 } from "lucide-react";
 
 /**
@@ -186,12 +188,28 @@ const DEFAULT_CONFIG = {
       ],
     },
     {
-      layout: "logos",
+      layout: "callouts",
       on: "dark",
-      kicker: "Integrations",
-      title: "Part of Your Stack",
-      text: "Swap placeholders with your actual tools.",
-      logos: ["Twilio", "OpenAI", "11Labs", "n8n", "Google Cloud", "Cal.com"],
+      bgIndex: 1,
+      kicker: "Time & Cost Savings",
+      title: "Time & Cost Savings",
+      blocks: [
+        { 
+          icon: "Clock", 
+          title: "More Time for Clients", 
+          text: "Staff spend less time taking calls, more time with clients or treatments." 
+        },
+        { 
+          icon: "DollarSign", 
+          title: "Fewer Missed Opportunities", 
+          text: "Fewer missed bookings, fewer cancellations." 
+        },
+        { 
+          icon: "Clock", 
+          title: "24/7 Availability", 
+          text: "Capture more leads outside business hours." 
+        },
+      ],
     },
     {
       layout: "pricing",
@@ -241,6 +259,8 @@ const ICONS = {
   Video,
   Calendar,
   FileText,
+  Clock,
+  DollarSign,
 };
 
 function Icon({ name, className = "w-5 h-5" }) {
@@ -679,6 +699,12 @@ function TimelineSlide({ s }) {
 }
 
 function CalloutsSlide({ s }) {
+  // Add emoji transition for Time & Cost Savings slide
+  const showEmojiTransition = s.kicker === "Time & Cost Savings";
+  const emojiSequence = showEmojiTransition 
+    ? ["🕐", "🕑", "🕒", "🕓", "🕔", "🕕", "🕖", "🕗", "🕘", "🕙", "🕚", "🕛", "💵", "💵", "💵", "💵", "💵", "💵", "💵"]
+    : [];
+
   return (
     <div className="flex flex-col justify-center items-center min-h-[100dvh] px-6 md:px-16">
       <div className="max-w-7xl w-full translate-y-0 md:-translate-y-[5%] lg:-translate-y-[10%]">
@@ -686,6 +712,13 @@ function CalloutsSlide({ s }) {
           <Pill tone={s.on}>{s.kicker}</Pill>
           <h2 className="text-4xl md:text-6xl lg:text-7xl font-bold tracking-tight mt-5">{s.title}</h2>
         </div>
+        {showEmojiTransition && (
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-2 md:gap-3 lg:gap-4 text-2xl md:text-3xl lg:text-4xl opacity-80">
+            {emojiSequence.map((emoji, i) => (
+              <span key={i} className="transition-transform hover:scale-125">{emoji}</span>
+            ))}
+          </div>
+        )}
         <div className={`mt-16 grid grid-cols-1 ${s.gridCols === 2 ? 'md:grid-cols-2 lg:grid-cols-2' : 'md:grid-cols-3 lg:grid-cols-3'} gap-4 md:gap-3 lg:gap-9`}>
           {s.blocks?.map((b, i) => (
             <div key={i} className={`rounded-[28px] border relative overflow-hidden backdrop-blur-[34px] opacity-92 shadow-[0_10px_28px_rgba(0,0,0,0.10)] hover-glow-alt ${
